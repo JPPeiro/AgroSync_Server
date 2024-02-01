@@ -1,0 +1,24 @@
+POSTMAN: http://localhost:8080/api/usuarios/
+
+create database Agro_Sync;
+use Agro_Sync;
+CREATE TABLE Usuario (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    contrasena VARCHAR(255) NOT NULL,
+    permisos VARCHAR(255) NOT NULL
+);
+-- Insertar usuario con permisos "admin"
+INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('admin_user', '123', 'admin');
+
+-- Insertar usuario con permisos "prueba"
+INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('test_user', '123', 'prueba');
+select * from Usuario;
+DELIMITER //
+
+CREATE PROCEDURE obtener_usuarios()
+BEGIN
+    SELECT id, nombre, contrasena, permisos FROM Usuario;
+END //
+
+DELIMITER ;
