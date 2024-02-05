@@ -25,7 +25,7 @@ public class UsuarioDBRepository implements IUsuarioRepository {
              CallableStatement cs = connection.prepareCall(sql)) {
             cs.setInt(2, usuario.getId());
             cs.setString(3, usuario.getNombre());
-            cs.setString(4, usuario.getContraseña());
+            cs.setString(4, usuario.getPassword());
             cs.setString(5, usuario.getPermisos());
             cs.execute();
         }
@@ -46,7 +46,7 @@ public class UsuarioDBRepository implements IUsuarioRepository {
              CallableStatement cs = connection.prepareCall(sql)) {
             cs.setInt(2, usuario.getId());
             cs.setString(3, usuario.getNombre());
-            cs.setString(4, usuario.getContraseña());
+            cs.setString(4, usuario.getPassword());
             cs.setString(5, usuario.getPermisos());
             cs.execute();
         }
@@ -90,7 +90,7 @@ public class UsuarioDBRepository implements IUsuarioRepository {
                 usuariosDB.add(Usuario.builder()
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
-                        .contraseña(rs.getString(3))
+                        .password(rs.getString(3))
                         .permisos(rs.getString(4))
                         .build());
             }
@@ -117,7 +117,7 @@ public class UsuarioDBRepository implements IUsuarioRepository {
                 usuario = Usuario.builder()
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
-                        .contraseña(rs.getString(3))
+                        .password(rs.getString(3))
                         .permisos(rs.getString(4))
                         .build();
             }
