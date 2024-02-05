@@ -13,7 +13,7 @@ import java.util.Objects;
 public class Pienso {
     private int id;
     private String nombre;
-    private String composicion;
+    private int cantidad;
 
     /**
      * Compara si el objeto dado es igual a este Pienso.

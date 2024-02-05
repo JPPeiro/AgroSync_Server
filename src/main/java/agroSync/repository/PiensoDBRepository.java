@@ -24,7 +24,7 @@ public class PiensoDBRepository implements IPiensoRepository {
              CallableStatement cs = connection.prepareCall(sql)) {
             cs.setInt(2, pienso.getId());
             cs.setString(3, pienso.getNombre());
-            cs.setString(4, pienso.getComposicion());
+            cs.setInt(4, pienso.getCantidad());
             cs.execute();
         }
         return pienso;
@@ -44,7 +44,7 @@ public class PiensoDBRepository implements IPiensoRepository {
              CallableStatement cs = connection.prepareCall(sql)) {
             cs.setInt(2, pienso.getId());
             cs.setString(3, pienso.getNombre());
-            cs.setString(3, pienso.getComposicion());
+            cs.setInt(3, pienso.getCantidad());
             cs.execute();
         }
         return pienso;
@@ -87,7 +87,7 @@ public class PiensoDBRepository implements IPiensoRepository {
                 piensosDB.add(Pienso.builder()
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
-                        .composicion(rs.getString(3))
+                        .cantidad(rs.getInt(3))
                         .build());
             }
         }
@@ -113,7 +113,7 @@ public class PiensoDBRepository implements IPiensoRepository {
                 pienso = pienso.builder()
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
-                        .composicion(rs.getString(3))
+                        .cantidad(rs.getInt(3))
                         .build();
             }
         }
