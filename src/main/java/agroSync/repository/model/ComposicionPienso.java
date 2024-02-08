@@ -13,4 +13,5 @@ import java.util.Objects;
 public class ComposicionPienso {
     private int idPienso;
     private int idIngrediente;
+    private float cantidad;
 }

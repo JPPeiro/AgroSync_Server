@@ -25,6 +25,7 @@ CREATE TABLE Ingredientes (
 CREATE TABLE ComposicionPiensos (
     PiensosID INT,
     IngredienteID INT,
+    Cantidad varchar (25) NOT NULL,
     PRIMARY KEY (PiensosID, IngredienteID),
     FOREIGN KEY (PiensosID) REFERENCES Piensos(id),
     FOREIGN KEY (IngredienteID) REFERENCES Ingredientes(id)
@@ -37,17 +38,19 @@ INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('admin_user', '123', 
 -- Insertar usuario con permisos "prueba"
 INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('test_user', '123', 'prueba');
 select * from Usuario;
--- Inserts en la tabla Piensos
-INSERT INTO Piensos (Nombre, CantidadInventario) VALUES
-    ('Pienso1', 100),
-    ('Pienso2', 150),
-    ('Pienso3', 120),
-    ('Pienso4', 200),
-    ('Pienso5', 180),
-    ('Pienso6', 90),
-    ('Pienso7', 130),
-    ('Pienso8', 170),
-    ('Pienso9', 110),
+
+-- Inserts en la tabla ComposicionPiensos
+INSERT INTO ComposicionPiensos (PiensosID, IngredienteID, Cantidad) VALUES
+    (1, 1, '250'),
+    (1, 2, '500'),
+    (2, 2, '150'),
+    (2, 3, '180'),
+    (3, 4, '600'),
+    (3, 1, '350'),
+    (4, 5, '110'),
+    (4, 2, '360'),
+    (5, 3, '560'),
+    (5, 4, '280');
     ('Pienso10', 160);
 
 -- Inserts en la tabla Ingredientes
@@ -94,6 +97,15 @@ DELIMITER //
 CREATE PROCEDURE obtener_composiciones()
 BEGIN
     SELECT * FROM ComposicionPiensos;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE obtener_ingredientes()
+BEGIN
+    SELECT * FROM Ingredientes;
 END //
 
 DELIMITER ;

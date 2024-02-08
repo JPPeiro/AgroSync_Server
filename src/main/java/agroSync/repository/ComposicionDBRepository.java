@@ -20,11 +20,12 @@ public class ComposicionDBRepository implements IComposicionRepository {
      */
     @Override
     public ComposicionPienso addComposicion(ComposicionPienso composicion) throws SQLException {
-        String sql = "{call crear_composicion(?,?,?)}";
+        String sql = "{call crear_composicion(?,?,?,?)}";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
             cs.setInt(2, composicion.getIdPienso());
             cs.setInt(3, composicion.getIdIngrediente());
+            cs.setFloat(4, composicion.getCantidad());
             cs.execute();
         }
         return composicion;
@@ -39,11 +40,12 @@ public class ComposicionDBRepository implements IComposicionRepository {
      */
     @Override
     public ComposicionPienso updateComposicion(ComposicionPienso composicion) throws SQLException {
-        String sql = "{? = call actualizar_composicion(?,?,?)}";
+        String sql = "{? = call actualizar_composicion(?,?,?,?)}";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
             cs.setInt(2, composicion.getIdPienso());
             cs.setInt(3, composicion.getIdIngrediente());
+            cs.setFloat(4, composicion.getCantidad());
             cs.execute();
         }
         return composicion;
@@ -88,6 +90,7 @@ public class ComposicionDBRepository implements IComposicionRepository {
                 composicionsDB.add(ComposicionPienso.builder()
                         .idPienso(rs.getInt(1))
                         .idIngrediente(rs.getInt(2))
+                        .cantidad(rs.getFloat(3))
                         .build());
             }
         }
@@ -114,6 +117,7 @@ public class ComposicionDBRepository implements IComposicionRepository {
                 composicion = ComposicionPienso.builder()
                         .idPienso(rs.getInt(1))
                         .idIngrediente(rs.getInt(2))
+                        .cantidad(rs.getFloat(3))
                         .build();
             }
         }
