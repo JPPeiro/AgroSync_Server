@@ -26,8 +26,8 @@ public class IngredienteDBController {
     @PostMapping("/ingredientes/")
     public ResponseEntity<?> addingrediente(@RequestBody Ingrediente ingrediente) {
         try{
-            Ingrediente u = service.addIngrediente(ingrediente);
-            return new ResponseEntity<>(u,HttpStatus.OK);
+            Ingrediente i = service.addIngrediente(ingrediente);
+            return new ResponseEntity<>(i,HttpStatus.OK);
         }catch (SQLException e){
             Map<String,Object> response = new HashMap<>();
             response.put("code",e.getErrorCode());
@@ -46,8 +46,8 @@ public class IngredienteDBController {
     @PutMapping("/ingredientes/")
     public ResponseEntity<?> updateingrediente(@RequestBody Ingrediente ingrediente){
         try{
-            Ingrediente u = service.updateIngrediente(ingrediente);
-            return new ResponseEntity<>(u,HttpStatus.OK);
+            Ingrediente i = service.updateIngrediente(ingrediente);
+            return new ResponseEntity<>(i,HttpStatus.OK);
 
         }catch (SQLException e){
             Map<String,Object> response = new HashMap<>();

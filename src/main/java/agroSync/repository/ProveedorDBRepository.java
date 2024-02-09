@@ -1,8 +1,8 @@
 package agroSync.repository;
 
-import agroSync.repository.intefaces.IPiensoRepository;
+import agroSync.repository.intefaces.IProveedorRepository;
 import agroSync.repository.model.MyDataSource;
-import agroSync.repository.model.Pienso;
+import agroSync.repository.model.Proveedor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -10,116 +10,113 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class PiensoDBRepository implements IPiensoRepository {
+public class ProveedorDBRepository implements IProveedorRepository {
+
     /**
-     * Agrega un nuevo pienso a la base de datos.
+     * Agrega un nuevo Proveedor a la base de datos.
      *
-     * @param pienso el pienso a agregar
-     * @return el pienso agregado
+     * @param proveedor el Proveedor a agregar
+     * @return el Proveedor agregado
      * @throws SQLException si ocurre un error al acceder a la base de datos
      */
     @Override
-    public Pienso addPienso(Pienso pienso) throws SQLException {
-        String sql = "{call crear_pienso(?,?,?,?)}";
+    public Proveedor addProveedor(Proveedor proveedor) throws SQLException {
+        String sql = "{call crear_Proveedor(?,?,?)}";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, pienso.getId());
-            cs.setString(3, pienso.getNombre());
-            cs.setInt(4, pienso.getCantidad());
+            cs.setInt(2, proveedor.getId());
+            cs.setString(3, proveedor.getNombre());
             cs.execute();
         }
-        return pienso;
+        return proveedor;
     }
 
     /**
-     * Actualiza los datos de un pienso en la base de datos.
+     * Actualiza los datos de un Proveedor en la base de datos.
      *
-     * @param pienso el pienso a actualizar
-     * @return el pienso actualizado
+     * @param proveedor el Proveedor a actualizar
+     * @return el Proveedor actualizado
      * @throws SQLException si ocurre un error al acceder a la base de datos
      */
     @Override
-    public Pienso updatePienso(Pienso pienso) throws SQLException {
-        String sql = "{? = call actualizar_pienso(?,?,?,?)}";
+    public Proveedor updateProveedor(Proveedor proveedor) throws SQLException {
+        String sql = "{? = call actualizar_Proveedor(?,?)}";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, pienso.getId());
-            cs.setString(3, pienso.getNombre());
-            cs.setInt(3, pienso.getCantidad());
+            cs.setInt(2, proveedor.getId());
+            cs.setString(3, proveedor.getNombre());
             cs.execute();
         }
-        return pienso;
+        return proveedor;
     }
 
     /**
-     * Elimina un pienso de la base de datos.
+     * Elimina un Proveedor de la base de datos.
      *
-     * @param id el ID del pienso a eliminar
-     * @return el pienso eliminado
+     * @param id el ID del Proveedor a eliminar
+     * @return el Proveedor eliminado
      * @throws SQLException si ocurre un error al acceder a la base de datos
      */
     @Override
-    public Pienso deletePienso(int id) throws SQLException {
-        Pienso pienso = getpiensoById(id);
-        String sql = " {? = call eliminar_pienso(?)}";
+    public Proveedor deleteProveedor(int id) throws SQLException {
+        Proveedor proveedor = getProveedorById(id);
+        String sql = " {? = call eliminar_Proveedor(?)}";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement cs = con.prepareCall(sql)) {
             cs.setInt(2, id);
             cs.execute();
         }
-        return pienso;
+        return proveedor;
     }
 
     /**
-     * Obtiene todos los piensos de la base de datos.
+     * Obtiene todos los Proveedores de la base de datos.
      *
-     * @return Lista de piensos
+     * @return Lista de Proveedores
      * @throws SQLException si ocurre un error al acceder a la base de datos
      */
-    public List<Pienso> getAllPiensos() throws SQLException {
-        ArrayList<Pienso> piensosDB = new ArrayList<>();
-        String query = "{ call obtener_piensos() }";
+    public List<Proveedor> getAllProveedores() throws SQLException {
+        ArrayList<Proveedor> proveedorDB = new ArrayList<>();
+        String query = "{ call obtener_proveedores() }";
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement st = connection.prepareCall(query);
              ResultSet rs = st.executeQuery(query)) {
             while (rs.next()) {
-                piensosDB.add(Pienso.builder()
+                proveedorDB.add(Proveedor.builder()
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
-                        .cantidad(rs.getInt(3))
                         .build());
             }
         }
 
-        return piensosDB;
+        return proveedorDB;
     }
 
     /**
-     * Obtiene un pienso de la base de datos por su ID.
+     * Obtiene un Proveedor de la base de datos por su ID.
      *
-     * @param id el ID del pienso
-     * @return el pienso encontrado, o null si no se encuentra
+     * @param id el ID del Proveedor
+     * @return el Proveedor encontrado, o null si no se encuentra
      * @throws SQLException si ocurre un error al acceder a la base de datos
      */
-    public Pienso getpiensoById(int id) throws SQLException {
-        Pienso pienso = null;
-        String query = "SELECT * FROM Pienso WHERE id=" + id;
+    public Proveedor getProveedorById(int id) throws SQLException {
+        Proveedor proveedor = null;
+        String query = "SELECT * FROM Proveedor WHERE id=" + id;
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery(query)) {
             while (rs.next()) {
-                pienso = pienso.builder()
+                proveedor = Proveedor.builder()
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
-                        .cantidad(rs.getInt(3))
                         .build();
             }
         }
 
-        return pienso;
+        return proveedor;
     }
 
 }

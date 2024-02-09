@@ -1,5 +1,6 @@
 package agroSync.repository;
 
+import agroSync.repository.intefaces.IUsuarioRepository;
 import agroSync.repository.model.MyDataSource;
 import agroSync.repository.model.Usuario;
 import org.springframework.stereotype.Repository;

@@ -1,5 +1,6 @@
 package agroSync.repository;
 
+import agroSync.repository.intefaces.IComposicionRepository;
 import agroSync.repository.model.MyDataSource;
 import agroSync.repository.model.ComposicionPienso;
 import org.springframework.stereotype.Repository;

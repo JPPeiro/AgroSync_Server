@@ -1,4 +1,4 @@
-package agroSync.repository;
+package agroSync.repository.intefaces;
 
 import agroSync.repository.model.Ingrediente;
 

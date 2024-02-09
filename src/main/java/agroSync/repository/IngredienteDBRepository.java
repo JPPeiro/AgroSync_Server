@@ -1,5 +1,6 @@
 package agroSync.repository;
 
+import agroSync.repository.intefaces.IIngredienteRepository;
 import agroSync.repository.model.MyDataSource;
 import agroSync.repository.model.Ingrediente;
 import org.springframework.stereotype.Repository;

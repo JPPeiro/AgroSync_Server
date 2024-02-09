@@ -31,6 +31,21 @@ CREATE TABLE ComposicionPiensos (
     FOREIGN KEY (IngredienteID) REFERENCES Ingredientes(id)
 );
 
+CREATE TABLE Proveedores (
+    id INT auto_increment,
+    nombre varchar (25) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IngredientesProveedor (
+	idProveedor INT,
+    idIngrediente INT,
+    precio float,
+	PRIMARY KEY (idProveedor, idIngrediente),
+    FOREIGN KEY (idProveedor) REFERENCES Proveedores(id),
+    FOREIGN KEY (idIngrediente) REFERENCES Ingredientes(id)
+);
+
 - Inserts
 -- Insertar usuario con permisos "admin"
 INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('admin_user', '123', 'admin');
@@ -74,6 +89,16 @@ INSERT INTO ComposicionPiensos (PiensosID, IngredienteID) VALUES
     (5, 3),
     (5, 4);
 
+INSERT INTO Proveedores (nombre) VALUES ('Proveedor A');
+INSERT INTO Proveedores (nombre) VALUES ('Proveedor B');
+INSERT INTO Proveedores (nombre) VALUES ('Proveedor C');
+
+INSERT INTO IngredientesProveedor (idProveedor, idIngrediente, precio) VALUES
+    (1, 1, 10.50),  -- Proveedor A suministra Ingrediente1
+    (1, 2, 15.75),  -- Proveedor A suministra Ingrediente2
+    (2, 3, 8.20),   -- Proveedor B suministra Ingrediente3
+    (2, 4, 12.00),  -- Proveedor B suministra Ingrediente4
+    (3, 5, 20.00);  -- Proveedor C suministra Ingrediente5
 
 - Procedimientos
 DELIMITER //
@@ -106,6 +131,22 @@ DELIMITER //
 CREATE PROCEDURE obtener_ingredientes()
 BEGIN
     SELECT * FROM Ingredientes;
+END //
+
+DELIMITER ;
+
+CREATE PROCEDURE obtener_proveedores()
+BEGIN
+    SELECT * FROM Proveedores;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE obtener_ingredientes_proveedor()
+BEGIN
+    SELECT * FROM IngredientesProveedor;
 END //
 
 DELIMITER ;

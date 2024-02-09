@@ -1,7 +1,7 @@
 package agroSync.controller;
 
-import agroSync.repository.model.ComposicionPienso;
-import agroSync.service.ComposicionDBService;
+import agroSync.repository.model.Proveedor;
+import agroSync.service.ProveedorDBService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,22 +13,22 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-public class ComposicionDBController {
+public class ProveedorDBController {
     @Autowired
-    private ComposicionDBService service;
+    private ProveedorDBService service;
 
     /**
-     * Maneja la solicitud POST para agregar una nueva composicion.
+     * Maneja la solicitud POST para agregar un nuevo Proveedor.
      *
-     * @param composicion el objeto composicion que se va a agregar
-     * @return una ResponseEntity que contiene la composicion agregada si la solicitud es exitosa,
+     * @param proveedor el objeto Proveedor que se va a agregar
+     * @return una ResponseEntity que contiene el Proveedor agregado si la solicitud es exitosa,
      *         o un mapa de respuesta con el código de error y el mensaje de error en caso de fallo.
      */
-    @PostMapping("/composiciones/")
-    public ResponseEntity<?> addcomposicion(@RequestBody ComposicionPienso composicion) {
+    @PostMapping("/proveedores/")
+    public ResponseEntity<?> addProveedor(@RequestBody Proveedor proveedor) {
         try{
-            ComposicionPienso c = service.addcomposicion(composicion);
-            return new ResponseEntity<>(c,HttpStatus.OK);
+            Proveedor p = service.addProveedor(proveedor);
+            return new ResponseEntity<>(p,HttpStatus.OK);
         }catch (SQLException e){
             Map<String,Object> response = new HashMap<>();
             response.put("code",e.getErrorCode());
@@ -38,17 +38,17 @@ public class ComposicionDBController {
     }
 
     /**
-     * Maneja la solicitud PUT para actualizar una composicion existente.
+     * Maneja la solicitud PUT para actualizar un Proveedor existente.
      *
-     * @param composicion el objeto composicion actualizado
-     * @return una ResponseEntity que contiene la composicion actualizada si la solicitud es exitosa,
+     * @param proveedor el objeto Proveedor actualizado
+     * @return una ResponseEntity que contiene el Proveedor actualizado si la solicitud es exitosa,
      *         o un mapa de respuesta con el código de error y el mensaje de error en caso de fallo.
      */
-    @PutMapping("/composiciones/")
-    public ResponseEntity<?> updatecomposicion(@RequestBody ComposicionPienso composicion){
+    @PutMapping("/proveedores/")
+    public ResponseEntity<?> updateProveedor(@RequestBody Proveedor proveedor){
         try{
-            ComposicionPienso c = service.updateComposicion(composicion);
-            return new ResponseEntity<>(c,HttpStatus.OK);
+            Proveedor p = service.updateProveedor(proveedor);
+            return new ResponseEntity<>(p,HttpStatus.OK);
 
         }catch (SQLException e){
             Map<String,Object> response = new HashMap<>();
@@ -60,16 +60,16 @@ public class ComposicionDBController {
     }
 
     /**
-     * Maneja la solicitud DELETE para eliminar una composicion.
+     * Maneja la solicitud DELETE para eliminar un Proveedor.
      *
-     * @param id el ID del composicion a eliminar
-     * @return una ResponseEntity que contiene la composicion eliminada si la solicitud es exitosa,
+     * @param id el ID del Proveedor a eliminar
+     * @return una ResponseEntity que contiene el Proveedor eliminado si la solicitud es exitosa,
      *         o un mapa de respuesta con el código de error y el mensaje de error en caso de fallo.
      */
-    @DeleteMapping("composiciones/{id}/{idIngrediente}")
-    public ResponseEntity<?> deleteComposicion(@PathVariable("id") int id, @PathVariable("idIngrediente") int idIngrediente) {
+    @DeleteMapping("proveedores/{id}")
+    public ResponseEntity<?> deleteProveedor(@PathVariable("id") int id) {
         try {
-            return new ResponseEntity<>(service.deleteComposicion(id,idIngrediente),HttpStatus.OK);
+            return new ResponseEntity<>(service.deleteProveedor(id),HttpStatus.OK);
         } catch(SQLException e){
             Map<String,Object> response = new HashMap<>();
             response.put("code",e.getErrorCode());
@@ -80,15 +80,15 @@ public class ComposicionDBController {
     }
 
     /**
-     * Maneja la solicitud GET para obtener todas las composiciones.
+     * Maneja la solicitud GET para obtener todos los Proveedores.
      *
-     * @return una ResponseEntity que contiene una lista de las composiciones si la solicitud es exitosa,
+     * @return una ResponseEntity que contiene una lista de Proveedores si la solicitud es exitosa,
      *         o un mapa de respuesta con el código de error y el mensaje de error en caso de fallo.
      */
-    @GetMapping("/composiciones/")
-    public ResponseEntity<?> getAllcomposicions(){
+    @GetMapping("/proveedores/")
+    public ResponseEntity<?> getAllProveedores(){
         try {
-            return new ResponseEntity<>(service.getAllcomposicions(), HttpStatus.OK);
+            return new ResponseEntity<>(service.getAllProveedors(), HttpStatus.OK);
         } catch(SQLException e){
             Map<String,Object> response = new HashMap<>();
             response.put("code",e.getErrorCode());

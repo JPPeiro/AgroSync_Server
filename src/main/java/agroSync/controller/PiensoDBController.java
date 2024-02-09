@@ -26,8 +26,8 @@ public class PiensoDBController {
     @PostMapping("/piensos/")
     public ResponseEntity<?> addpienso(@RequestBody Pienso pienso) {
         try{
-            Pienso u = service.addPienso(pienso);
-            return new ResponseEntity<>(u,HttpStatus.OK);
+            Pienso p = service.addPienso(pienso);
+            return new ResponseEntity<>(p,HttpStatus.OK);
         }catch (SQLException e){
             Map<String,Object> response = new HashMap<>();
             response.put("code",e.getErrorCode());
@@ -46,8 +46,8 @@ public class PiensoDBController {
     @PutMapping("/piensos/")
     public ResponseEntity<?> updatepienso(@RequestBody Pienso pienso){
         try{
-            Pienso u = service.updatePienso(pienso);
-            return new ResponseEntity<>(u,HttpStatus.OK);
+            Pienso p = service.updatePienso(pienso);
+            return new ResponseEntity<>(p,HttpStatus.OK);
 
         }catch (SQLException e){
             Map<String,Object> response = new HashMap<>();
