@@ -21,17 +21,18 @@ public class UsuarioDBRepository implements IUsuarioRepository {
      */
     @Override
     public Usuario addUsuario(Usuario usuario) throws SQLException {
-        String sql = "{call crear_usuario(?,?,?,?,?)}";
+        String sql = "UPDATE usuarios SET nombre = ?, password = ?, permisos = ? WHERE id = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, usuario.getId());
-            cs.setString(3, usuario.getNombre());
-            cs.setString(4, usuario.getPassword());
-            cs.setString(5, usuario.getPermisos());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, usuario.getNombre());
+            ps.setString(2, usuario.getPassword());
+            ps.setString(3, usuario.getPermisos());
+            ps.setInt(4, usuario.getId());
+            ps.executeUpdate();
         }
         return usuario;
     }
+
 
     /**
      * Actualiza los datos de un usuario en la base de datos.
@@ -42,17 +43,18 @@ public class UsuarioDBRepository implements IUsuarioRepository {
      */
     @Override
     public Usuario updateUsuario(Usuario usuario) throws SQLException {
-        String sql = "{? = call actualizar_usuario(?,?,?,?)}";
+        String sql = "UPDATE Usuario SET nombre = ?, contrasena = ?, permisos = ? WHERE id = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, usuario.getId());
-            cs.setString(3, usuario.getNombre());
-            cs.setString(4, usuario.getPassword());
-            cs.setString(5, usuario.getPermisos());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, usuario.getNombre());
+            ps.setString(2, usuario.getPassword());
+            ps.setString(3, usuario.getPermisos());
+            ps.setInt(4, usuario.getId());
+            ps.executeUpdate();
         }
         return usuario;
     }
+
 
     /**
      * Elimina un usuario de la base de datos.
@@ -64,13 +66,14 @@ public class UsuarioDBRepository implements IUsuarioRepository {
     @Override
     public Usuario deleteUsuario(int id) throws SQLException {
         Usuario usuario = getUsuarioById(id);
-        String sql = " {? = call eliminar_usuario(?)}";
+        String sql = "DELETE FROM usuarios WHERE id = ?";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = con.prepareCall(sql)) {
-            cs.setInt(2, id);
-            cs.execute();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
+
         return usuario;
     }
 
