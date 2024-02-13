@@ -51,7 +51,7 @@ CREATE TABLE IngredientesProveedor (
 INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('admin_user', '123', 'admin');
 
 -- Insertar usuario con permisos "prueba"
-INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('test_user', '123', 'prueba');
+    INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ('test_user', '123', 'prueba');
 select * from Usuario;
 
 -- Inserts en la tabla ComposicionPiensos

@@ -21,13 +21,12 @@ public class UsuarioDBRepository implements IUsuarioRepository {
      */
     @Override
     public Usuario addUsuario(Usuario usuario) throws SQLException {
-        String sql = "UPDATE usuarios SET nombre = ?, password = ?, permisos = ? WHERE id = ?";
+        String sql = " INSERT INTO Usuario (nombre, contrasena, permisos) VALUES ( ?, ?, ?)";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, usuario.getNombre());
             ps.setString(2, usuario.getPassword());
             ps.setString(3, usuario.getPermisos());
-            ps.setInt(4, usuario.getId());
             ps.executeUpdate();
         }
         return usuario;
@@ -66,7 +65,7 @@ public class UsuarioDBRepository implements IUsuarioRepository {
     @Override
     public Usuario deleteUsuario(int id) throws SQLException {
         Usuario usuario = getUsuarioById(id);
-        String sql = "DELETE FROM usuarios WHERE id = ?";
+        String sql = "DELETE FROM Usuario WHERE id = ?";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
