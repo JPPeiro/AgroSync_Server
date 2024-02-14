@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Servicio para manejar los piensos en la base de datos.
@@ -68,5 +69,16 @@ public class PiensoDBService {
      */
     public void agregarPienso(String piensoId, String cantidadTotal) throws SQLException {
         repository.agregarPienso(piensoId, cantidadTotal);
+    }
+
+    /**
+     *  Comprueba si hay stock suficiente de ingredientes
+     * @param piensoId el id del pienso
+     * @param cantidadTotal la cantidad total a fabricar
+     * @return true si hay stock false y un map con el id del igrediente y la cantidad necesaria
+     * @throws SQLException
+     */
+    public Map<String, Object> verificarStock(int piensoId, int cantidadTotal) throws SQLException {
+        return repository.verificarStock(piensoId,cantidadTotal);
     }
 }

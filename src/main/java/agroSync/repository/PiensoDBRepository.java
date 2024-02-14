@@ -3,11 +3,17 @@ package agroSync.repository;
 import agroSync.repository.intefaces.IPiensoRepository;
 import agroSync.repository.model.MyDataSource;
 import agroSync.repository.model.Pienso;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class PiensoDBRepository implements IPiensoRepository {
@@ -140,5 +146,40 @@ public class PiensoDBRepository implements IPiensoRepository {
 
         return pienso;
     }
+
+    /**
+     *  Comprueba si hay stock suficiente de ingredientes
+     * @param piensoId el id del pienso
+     * @param cantidadTotal la cantidad total a fabricar
+     * @return true si hay stock false y un map con el id del igrediente y la cantidad necesaria
+     * @throws SQLException
+     */
+    public Map<String, Object> verificarStock(int piensoId, int cantidadTotal) throws SQLException {
+        String sql = "{call verificarStock(?,?,?,?)}";
+
+        try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
+             CallableStatement cs = connection.prepareCall(sql)) {
+            cs.setInt(1, piensoId);
+            cs.setInt(2, cantidadTotal);
+            cs.registerOutParameter(3, Types.BOOLEAN);
+            cs.registerOutParameter(4, Types.VARCHAR);
+
+            cs.execute();
+
+            boolean result = cs.getBoolean(3);
+            String mapJson = cs.getString(4);
+
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<Object>>(){}.getType();
+            List<Object> resultList = gson.fromJson(mapJson, type);
+
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("result", result);
+            resultMap.put("data", resultList);
+
+            return resultMap;
+        }
+    }
+
 
 }

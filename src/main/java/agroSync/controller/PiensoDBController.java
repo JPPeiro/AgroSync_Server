@@ -59,6 +59,27 @@ public class PiensoDBController {
         }
     }
 
+    /**
+     *  Comprueba si hay stock suficiente de ingredientes
+     * @param requestBody
+     * @return
+     */
+    @PostMapping("/verificar/")
+    public ResponseEntity<?> verificarStock(@RequestBody Map<String, Integer> requestBody) {
+        int piensoId = requestBody.get("piensoId");
+        int cantidadTotal = requestBody.get("cantidadTotal");
+
+        try {
+            Map<String, Object> result = service.verificarStock(piensoId, cantidadTotal);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (SQLException e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", e.getErrorCode());
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     /**
      * Maneja la solicitud PUT para actualizar un pienso existente.
