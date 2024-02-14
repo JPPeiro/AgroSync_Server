@@ -13,6 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class PiensoDBController {
+
     @Autowired
     private PiensoDBService service;
 
@@ -35,6 +36,29 @@ public class PiensoDBController {
             return new ResponseEntity<>(response,HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Maneja la solicitud POST para agregar pienso y restar stock de los ingredientes.
+     *
+     * @param requestBody
+     * @return
+     */
+    @PostMapping("/")
+    public ResponseEntity<?> agregarPienso(@RequestBody Map<String, String> requestBody) {
+        String piensoId = requestBody.get("piensoId");
+        String cantidadTotal = requestBody.get("cantidadTotal");
+
+        try {
+            service.agregarPienso(piensoId, cantidadTotal);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (SQLException e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("code", e.getErrorCode());
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
     /**
      * Maneja la solicitud PUT para actualizar un pienso existente.

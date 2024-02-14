@@ -150,3 +150,40 @@ BEGIN
 END //
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE AgregarPienso(IN p_pienso_id INT, IN p_cantidad_total INT)
+BEGIN
+    -- Declaración de variables locales
+    DECLARE cantidad_ingrediente INT;
+    DECLARE id_ingrediente INT;
+
+	-- Declaración del cursor
+    DECLARE cur_composicion CURSOR FOR
+    SELECT IngredienteID, Cantidad
+    FROM ComposicionPiensos
+    WHERE PiensosID = p_pienso_id;
+
+    -- Añadir cantidadTotal a la cantidadInventario del pienso
+    UPDATE Piensos
+    SET CantidadInventario = CantidadInventario + p_cantidad_total
+    WHERE id = p_pienso_id;
+
+    -- Apertura del cursor
+    OPEN cur_composicion;
+    read_loop: LOOP
+        FETCH cur_composicion INTO id_ingrediente, cantidad_ingrediente;
+        IF (cantidad_ingrediente IS NULL) THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- Actualización de la cantidadInventario del ingrediente
+        UPDATE Ingredientes
+        SET CantidadInventario = CantidadInventario - (cantidad_ingrediente * p_cantidad_total)
+        WHERE id = id_ingrediente;
+    END LOOP;
+    CLOSE cur_composicion; -- Cierre del cursor
+END //
+
+DELIMITER ;

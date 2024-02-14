@@ -97,6 +97,25 @@ public class PiensoDBRepository implements IPiensoRepository {
     }
 
     /**
+     * Llama al procedimiento agregarPienso que añade la cantidad fabricada de pienso y resta la cantidad de ingredientes
+     * @param piensoId el id del pienso
+     * @param cantidadTotal la cantidad total a añadir al stock de pienso
+     * @throws SQLException
+     */
+    public void agregarPienso(String piensoId, String cantidadTotal) throws SQLException {
+        int id = Integer.parseInt(piensoId);
+        int cantidad = Integer.parseInt(cantidadTotal);
+        String query = "{ call AgregarPienso(?, ?) }";
+
+        try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
+             CallableStatement statement = connection.prepareCall(query)) {
+            statement.setInt(1, id);
+            statement.setInt(2, cantidad);
+            statement.execute();
+        }
+    }
+
+    /**
      * Obtiene un pienso de la base de datos por su ID.
      *
      * @param id el ID del pienso

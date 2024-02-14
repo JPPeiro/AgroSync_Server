@@ -59,4 +59,14 @@ public class PiensoDBService {
     public List<Pienso> getAllPiensos() throws SQLException {
         return repository.getAllPiensos();
     }
+
+    /**
+     *  Agrega la cantidad fabricada de pienso y resta al stock de ingredientes
+     * @param piensoId el id del pienso
+     * @param cantidadTotal la cantidad a añadir del pienso.
+     * @throws SQLException
+     */
+    public void agregarPienso(String piensoId, String cantidadTotal) throws SQLException {
+        repository.agregarPienso(piensoId, cantidadTotal);
+    }
 }
