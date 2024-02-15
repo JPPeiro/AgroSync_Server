@@ -20,13 +20,12 @@ public class IngredienteDBRepository implements IIngredienteRepository {
      */
     @Override
     public Ingrediente addIngrediente(Ingrediente ingrediente) throws SQLException {
-        String sql = "{call crear_ingrediente(?,?,?,?)}";
+        String sql = " INSERT INTO Ingredientes (nombre, cantidad) VALUES ( ?, ?)";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, ingrediente.getId());
-            cs.setString(3, ingrediente.getNombre());
-            cs.setString(4, ingrediente.getCantidad());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, ingrediente.getNombre());
+            ps.setString(2, ingrediente.getCantidad());
+            ps.execute();
         }
         return ingrediente;
     }
@@ -40,13 +39,13 @@ public class IngredienteDBRepository implements IIngredienteRepository {
      */
     @Override
     public Ingrediente updateIngrediente(Ingrediente ingrediente) throws SQLException {
-        String sql = "{? = call actualizar_ingrediente(?,?,?)}";
+        String sql = "UPDATE Ingredientes SET nombre = ?, cantidad = ? WHERE id = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, ingrediente.getId());
-            cs.setString(3, ingrediente.getNombre());
-            cs.setString(4, ingrediente.getCantidad());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, ingrediente.getNombre());
+            ps.setString(2, ingrediente.getCantidad());
+            ps.setInt(3, ingrediente.getId());
+            ps.execute();
         }
         return ingrediente;
     }
@@ -61,12 +60,12 @@ public class IngredienteDBRepository implements IIngredienteRepository {
     @Override
     public Ingrediente deleteIngrediente(int id) throws SQLException {
         Ingrediente ingrediente = getIngredienteById(id);
-        String sql = " {? = call eliminar_ingrediente(?)}";
+        String sql = "DELETE FROM Ingredientes WHERE id = ?";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = con.prepareCall(sql)) {
-            cs.setInt(2, id);
-            cs.execute();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
         return ingrediente;
     }
@@ -105,7 +104,7 @@ public class IngredienteDBRepository implements IIngredienteRepository {
      */
     public Ingrediente getIngredienteById(int id) throws SQLException {
         Ingrediente ingrediente = null;
-        String query = "SELECT * FROM ingrediente WHERE id=" + id;
+        String query = "SELECT * FROM Ingredientes WHERE id=" + id;
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              Statement st = connection.createStatement();
