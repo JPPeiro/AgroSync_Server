@@ -20,7 +20,7 @@ public class IngredienteDBRepository implements IIngredienteRepository {
      */
     @Override
     public Ingrediente addIngrediente(Ingrediente ingrediente) throws SQLException {
-        String sql = " INSERT INTO Ingredientes (nombre, cantidad) VALUES ( ?, ?)";
+        String sql = " INSERT INTO Ingredientes (Nombre, CantidadInventario) VALUES ( ?, ?)";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, ingrediente.getNombre());
@@ -39,7 +39,7 @@ public class IngredienteDBRepository implements IIngredienteRepository {
      */
     @Override
     public Ingrediente updateIngrediente(Ingrediente ingrediente) throws SQLException {
-        String sql = "UPDATE Ingredientes SET nombre = ?, cantidad = ? WHERE id = ?";
+        String sql = "UPDATE Ingredientes SET Nombre = ?, CantidadInventario = ? WHERE id = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, ingrediente.getNombre());
