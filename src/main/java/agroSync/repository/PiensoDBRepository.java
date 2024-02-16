@@ -3,6 +3,7 @@ package agroSync.repository;
 import agroSync.repository.intefaces.IPiensoRepository;
 import agroSync.repository.model.MyDataSource;
 import agroSync.repository.model.Pienso;
+import agroSync.repository.model.Usuario;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -26,13 +27,12 @@ public class PiensoDBRepository implements IPiensoRepository {
      */
     @Override
     public Pienso addPienso(Pienso pienso) throws SQLException {
-        String sql = "{call crear_pienso(?,?,?,?)}";
+        String sql = " INSERT INTO Piensos (Nombre, CantidadInventario) VALUES ( ?, ?)";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, pienso.getId());
-            cs.setString(3, pienso.getNombre());
-            cs.setInt(4, pienso.getCantidad());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, pienso.getNombre());
+            ps.setInt(2, pienso.getCantidad());
+            ps.executeUpdate();
         }
         return pienso;
     }
@@ -46,13 +46,13 @@ public class PiensoDBRepository implements IPiensoRepository {
      */
     @Override
     public Pienso updatePienso(Pienso pienso) throws SQLException {
-        String sql = "{? = call actualizar_pienso(?,?,?,?)}";
+        String sql = "UPDATE Piensos SET Nombre = ?, CantidadInventario = ? WHERE id = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, pienso.getId());
-            cs.setString(3, pienso.getNombre());
-            cs.setInt(3, pienso.getCantidad());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, pienso.getNombre());
+            ps.setInt(2, pienso.getCantidad());
+            ps.setInt(3, pienso.getId());
+            ps.executeUpdate();
         }
         return pienso;
     }
@@ -67,12 +67,12 @@ public class PiensoDBRepository implements IPiensoRepository {
     @Override
     public Pienso deletePienso(int id) throws SQLException {
         Pienso pienso = getpiensoById(id);
-        String sql = " {? = call eliminar_pienso(?)}";
+        String sql = "DELETE FROM Piensos WHERE id = ?";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = con.prepareCall(sql)) {
-            cs.setInt(2, id);
-            cs.execute();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
         return pienso;
     }
@@ -130,7 +130,7 @@ public class PiensoDBRepository implements IPiensoRepository {
      */
     public Pienso getpiensoById(int id) throws SQLException {
         Pienso pienso = null;
-        String query = "SELECT * FROM Pienso WHERE id=" + id;
+        String query = "SELECT * FROM Piensos WHERE id=" + id;
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              Statement st = connection.createStatement();

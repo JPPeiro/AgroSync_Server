@@ -21,13 +21,13 @@ public class ComposicionDBRepository implements IComposicionRepository {
      */
     @Override
     public ComposicionPienso addComposicion(ComposicionPienso composicion) throws SQLException {
-        String sql = "{call crear_composicion(?,?,?,?)}";
+        String sql = " INSERT INTO ComposicionPiensos (PiensosID, IngredienteID, Cantidad) VALUES ( ?, ?, ?)";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, composicion.getIdPienso());
-            cs.setInt(3, composicion.getIdIngrediente());
-            cs.setFloat(4, composicion.getCantidad());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, composicion.getIdPienso());
+            ps.setInt(2, composicion.getIdIngrediente());
+            ps.setFloat(3, composicion.getCantidad());
+            ps.executeUpdate();
         }
         return composicion;
     }
@@ -41,13 +41,15 @@ public class ComposicionDBRepository implements IComposicionRepository {
      */
     @Override
     public ComposicionPienso updateComposicion(ComposicionPienso composicion) throws SQLException {
-        String sql = "{? = call actualizar_composicion(?,?,?,?)}";
+        String sql = "UPDATE ComposicionPiensos SET PiensosID = ?, IngredienteID = ?, Cantidad = ? WHERE PiensosID = ? AND IngredienteID = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, composicion.getIdPienso());
-            cs.setInt(3, composicion.getIdIngrediente());
-            cs.setFloat(4, composicion.getCantidad());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, composicion.getIdPienso());
+            ps.setInt(2, composicion.getIdIngrediente());
+            ps.setFloat(3, composicion.getCantidad());
+            ps.setInt(4, composicion.getIdPienso());
+            ps.setInt(5, composicion.getIdIngrediente());
+            ps.executeUpdate();
         }
         return composicion;
     }
@@ -63,13 +65,13 @@ public class ComposicionDBRepository implements IComposicionRepository {
     @Override
     public ComposicionPienso deleteComposicion (int id, int idIngrediente) throws SQLException {
         ComposicionPienso composicion = getcomposicionById(id,idIngrediente);
-        String sql = " {? = call eliminar_composicion(?,?)}";
+        String sql = "DELETE FROM ComposicionPiensos WHERE PiensosID = ? AND IngredienteID = ?";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = con.prepareCall(sql)) {
-            cs.setInt(2, id);
-            cs.setInt(3, idIngrediente);
-            cs.execute();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.setInt(2, idIngrediente);
+            ps.executeUpdate();
         }
         return composicion;
     }
@@ -109,7 +111,7 @@ public class ComposicionDBRepository implements IComposicionRepository {
      */
     public ComposicionPienso getcomposicionById(int id, int idIngrediente) throws SQLException {
         ComposicionPienso composicion = null;
-        String query = "SELECT * FROM composicion WHERE idPienso=" + id + " AND idIngrediente=" + idIngrediente;
+        String query = "SELECT * FROM ComposicionPiensos WHERE PiensosID=" + id + " AND IngredienteID=" + idIngrediente;
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              Statement st = connection.createStatement();

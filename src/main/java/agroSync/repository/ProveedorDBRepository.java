@@ -3,6 +3,7 @@ package agroSync.repository;
 import agroSync.repository.intefaces.IProveedorRepository;
 import agroSync.repository.model.MyDataSource;
 import agroSync.repository.model.Proveedor;
+import agroSync.repository.model.Usuario;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -21,12 +22,11 @@ public class ProveedorDBRepository implements IProveedorRepository {
      */
     @Override
     public Proveedor addProveedor(Proveedor proveedor) throws SQLException {
-        String sql = "{call crear_Proveedor(?,?,?)}";
+        String sql = " INSERT INTO Proveedores (nombre) VALUES (?)";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, proveedor.getId());
-            cs.setString(3, proveedor.getNombre());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, proveedor.getNombre());
+            ps.executeUpdate();
         }
         return proveedor;
     }
@@ -40,12 +40,12 @@ public class ProveedorDBRepository implements IProveedorRepository {
      */
     @Override
     public Proveedor updateProveedor(Proveedor proveedor) throws SQLException {
-        String sql = "{? = call actualizar_Proveedor(?,?)}";
+        String sql = "UPDATE Proveedores SET nombre = ? WHERE id = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, proveedor.getId());
-            cs.setString(3, proveedor.getNombre());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, proveedor.getNombre());
+            ps.setInt(2, proveedor.getId());
+            ps.executeUpdate();
         }
         return proveedor;
     }
@@ -60,12 +60,12 @@ public class ProveedorDBRepository implements IProveedorRepository {
     @Override
     public Proveedor deleteProveedor(int id) throws SQLException {
         Proveedor proveedor = getProveedorById(id);
-        String sql = " {? = call eliminar_Proveedor(?)}";
+        String sql = "DELETE FROM Proveedores WHERE id = ?";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = con.prepareCall(sql)) {
-            cs.setInt(2, id);
-            cs.execute();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
         return proveedor;
     }
@@ -103,7 +103,7 @@ public class ProveedorDBRepository implements IProveedorRepository {
      */
     public Proveedor getProveedorById(int id) throws SQLException {
         Proveedor proveedor = null;
-        String query = "SELECT * FROM Proveedor WHERE id=" + id;
+        String query = "SELECT * FROM Proveedores WHERE id=" + id;
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              Statement st = connection.createStatement();

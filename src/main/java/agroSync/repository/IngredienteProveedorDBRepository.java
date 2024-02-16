@@ -21,13 +21,13 @@ public class IngredienteProveedorDBRepository implements IIngredienteProveedorRe
      */
     @Override
     public IngredienteProveedor addIngredienteProveedor(IngredienteProveedor ingredienteProveedor) throws SQLException {
-        String sql = "{call crear_ingredienteProveedor(?,?,?,?)}";
+        String sql = " INSERT INTO IngredientesProveedor (idProveedor, idIngrediente, precio) VALUES ( ?, ?, ?)";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, ingredienteProveedor.getIdProveedor());
-            cs.setInt(3, ingredienteProveedor.getIdIngrediente());
-            cs.setFloat(4, ingredienteProveedor.getPrecio());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ingredienteProveedor.getIdProveedor());
+            ps.setInt(2, ingredienteProveedor.getIdIngrediente());
+            ps.setFloat(3, ingredienteProveedor.getPrecio());
+            ps.executeUpdate();
         }
         return ingredienteProveedor;
     }
@@ -41,13 +41,15 @@ public class IngredienteProveedorDBRepository implements IIngredienteProveedorRe
      */
     @Override
     public IngredienteProveedor updateIngredienteProveedor(IngredienteProveedor ingredienteProveedor) throws SQLException {
-        String sql = "{? = call actualizar_ingredienteProveedor(?,?,?,?)}";
+        String sql = "UPDATE IngredientesProveedor SET idProveedor = ?, idIngrediente = ?, precio = ? WHERE idProveedor = ? AND idIngrediente = ?";
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = connection.prepareCall(sql)) {
-            cs.setInt(2, ingredienteProveedor.getIdProveedor());
-            cs.setInt(3, ingredienteProveedor.getIdIngrediente());
-            cs.setFloat(4, ingredienteProveedor.getPrecio());
-            cs.execute();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, ingredienteProveedor.getIdProveedor());
+            ps.setInt(2, ingredienteProveedor.getIdIngrediente());
+            ps.setFloat(3, ingredienteProveedor.getPrecio());
+            ps.setInt(4, ingredienteProveedor.getIdProveedor());
+            ps.setInt(5, ingredienteProveedor.getIdIngrediente());
+            ps.executeUpdate();
         }
         return ingredienteProveedor;
     }
@@ -63,13 +65,13 @@ public class IngredienteProveedorDBRepository implements IIngredienteProveedorRe
     @Override
     public IngredienteProveedor deleteIngredienteProveedor (int idProveedor, int idIngrediente) throws SQLException {
         IngredienteProveedor ingredienteProveedor = getingredienteProveedorById(idProveedor,idIngrediente);
-        String sql = " {? = call eliminar_ingredienteProveedor(?,?)}";
+        String sql = "DELETE FROM IngredientesProveedor WHERE idProveedor = ? AND idIngrediente = ?";
 
         try (Connection con = MyDataSource.getMySQLDataSource().getConnection();
-             CallableStatement cs = con.prepareCall(sql)) {
-            cs.setInt(2, idProveedor);
-            cs.setInt(3, idIngrediente);
-            cs.execute();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idProveedor);
+            ps.setInt(2, idIngrediente);
+            ps.executeUpdate();
         }
         return ingredienteProveedor;
     }
@@ -109,7 +111,7 @@ public class IngredienteProveedorDBRepository implements IIngredienteProveedorRe
      */
     public IngredienteProveedor getingredienteProveedorById(int id, int idIngrediente) throws SQLException {
         IngredienteProveedor ingredienteProveedor = null;
-        String query = "SELECT * FROM ingredienteProveedor WHERE idPienso=" + id + " AND idIngrediente=" + idIngrediente;
+        String query = "SELECT * FROM IngredientesProveedor WHERE idPienso=" + id + " AND idIngrediente=" + idIngrediente;
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              Statement st = connection.createStatement();
