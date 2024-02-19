@@ -13,13 +13,13 @@ CREATE TABLE Usuario (
 CREATE TABLE Piensos (
     id INT PRIMARY KEY auto_increment,
     Nombre VARCHAR(255) NOT NULL,
-    CantidadInventario INT
+    CantidadInventario float
 );
 
 CREATE TABLE Ingredientes (
     id INT PRIMARY KEY auto_increment,
     Nombre VARCHAR(255) NOT NULL,
-	CantidadInventario INT
+	CantidadInventario float
 );
 
 CREATE TABLE ComposicionPiensos (
@@ -29,6 +29,16 @@ CREATE TABLE ComposicionPiensos (
     PRIMARY KEY (PiensosID, IngredienteID),
     FOREIGN KEY (PiensosID) REFERENCES Piensos(id),
     FOREIGN KEY (IngredienteID) REFERENCES Ingredientes(id)
+);
+
+CREATE TABLE PedidosIngredientes (
+	id INT auto_increment,
+    proveedorId INT,
+    ingredienteId INT,
+    coste float NOT NULL,
+    primary key (id),
+    FOREIGN KEY (ingredienteId) REFERENCES Ingredientes(id),
+    FOREIGN KEY (proveedorId) REFERENCES Proveedores(id)
 );
 
 CREATE TABLE Proveedores (
@@ -122,6 +132,17 @@ DELIMITER //
 CREATE PROCEDURE obtener_composiciones()
 BEGIN
     SELECT * FROM ComposicionPiensos;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+DELIMITER //
+
+CREATE PROCEDURE obtener_pedidos()
+BEGIN
+    SELECT * FROM PedidosIngredientes;
 END //
 
 DELIMITER ;

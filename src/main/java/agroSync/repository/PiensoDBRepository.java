@@ -110,13 +110,13 @@ public class PiensoDBRepository implements IPiensoRepository {
      */
     public void agregarPienso(String piensoId, String cantidadTotal) throws SQLException {
         int id = Integer.parseInt(piensoId);
-        int cantidad = Integer.parseInt(cantidadTotal);
+        float cantidad = Float.parseFloat(cantidadTotal);
         String query = "{ call AgregarPienso(?, ?) }";
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement statement = connection.prepareCall(query)) {
             statement.setInt(1, id);
-            statement.setInt(2, cantidad);
+            statement.setFloat(2, cantidad);
             statement.execute();
         }
     }
