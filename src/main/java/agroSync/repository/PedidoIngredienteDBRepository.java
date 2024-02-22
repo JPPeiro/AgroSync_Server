@@ -87,7 +87,7 @@ public class PedidoIngredienteDBRepository implements IPedidoIngredienteReposito
      */
     public List<PedidoIngrediente> getAllPedidosIngredientes() throws SQLException {
         ArrayList<PedidoIngrediente> pedidoIngredientesDB = new ArrayList<>();
-        String query = "{ call obtener_pedidoIngredientes() }";
+        String query = "{ call obtener_pedidos() }";
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement st = connection.prepareCall(query);
@@ -97,7 +97,8 @@ public class PedidoIngredienteDBRepository implements IPedidoIngredienteReposito
                         .id(rs.getInt(1))
                         .proveedorId(rs.getInt(2))
                         .ingredienteId(rs.getInt(3))
-                        .coste(rs.getFloat(4))
+                        .cantidad(rs.getInt(4))
+                        .coste(rs.getFloat(5))
                         .build());
             }
         }

@@ -38,6 +38,10 @@ public class IngredienteDBService {
         return repository.updateIngrediente(ingrediente);
     }
 
+    public Ingrediente updateCantidadIngrediente(int id, String cantidad) throws  SQLException {
+        return repository.updateCantidadIngrediente(id,cantidad);
+    }
+
     /**
      * Elimina un ingrediente de la base de datos.
      *

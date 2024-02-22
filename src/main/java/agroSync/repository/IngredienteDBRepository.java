@@ -51,6 +51,27 @@ public class IngredienteDBRepository implements IIngredienteRepository {
     }
 
     /**
+     * Actualiza la cantidad de un ingrediente en la base de datos.
+     *
+     * @param id el id del ingrediente
+     * @param cantidad la cantidad a aumentar
+     * @return
+     * @throws SQLException si ocurre un error al acceder a la base de datos
+     */
+    public Ingrediente updateCantidadIngrediente(int id, String cantidad) throws SQLException {
+        Ingrediente ingrediente = getIngredienteById(id);
+        String sql = "{CALL aumentarCantidadInventario(?, ?)}";
+        try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
+             CallableStatement cs = connection.prepareCall(sql)) {
+            cs.setInt(1, id);
+            cs.setFloat(2, Float.parseFloat(cantidad));
+            cs.execute();
+        }
+        return ingrediente;
+    }
+
+
+    /**
      * Elimina un ingrediente de la base de datos.
      *
      * @param id el ID del ingrediente a eliminar

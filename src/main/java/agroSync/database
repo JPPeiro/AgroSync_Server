@@ -174,10 +174,10 @@ DELIMITER ;
 
 DELIMITER //
 
-CREATE PROCEDURE AgregarPienso(IN p_pienso_id INT, IN p_cantidad_total INT)
+CREATE PROCEDURE AgregarPienso(IN p_pienso_id INT, IN p_cantidad_total float)
 BEGIN
     -- Declaración de variables locales
-    DECLARE cantidad_ingrediente INT;
+    DECLARE cantidad_ingrediente float;
     DECLARE id_ingrediente INT;
 
 	-- Declaración del cursor
@@ -213,14 +213,14 @@ DELIMITER //
 
 CREATE PROCEDURE verificarStock(
     IN p_pienso_id INT,
-    IN p_cantidad_total INT,
+    IN p_cantidad_total FLOAT,
     OUT p_result BOOLEAN,
     OUT p_map JSON
 )
 BEGIN
     DECLARE ingrediente_id INT;
-    DECLARE cantidad_necesaria INT;
-    DECLARE resultado INT;
+    DECLARE cantidad_necesaria FLOAT;
+    DECLARE resultado FLOAT;
 
     DECLARE no_negativo BOOLEAN DEFAULT TRUE;
     DECLARE ingredientes_cursor CURSOR FOR
@@ -255,7 +255,7 @@ BEGIN
         WHERE id = ingrediente_id;
 
         -- Si el resultado es negativo, calcular la cantidad necesaria
-        IF @cantidad_inventario - resultado < 0 THEN
+        IF (@cantidad_inventario - resultado) < 0 THEN
             SET p_map = JSON_ARRAY_APPEND(p_map, '$', JSON_OBJECT('idIngrediente', ingrediente_id, 'cantidad', -(@cantidad_inventario - resultado)));
             SET p_result = FALSE;
         END IF;
@@ -271,6 +271,36 @@ BEGIN
 END//
 
 DELIMITER ;
+
+DELIMITER //
+
+CREATE PROCEDURE aumentarCantidadInventario (
+    IN p_id INT,
+    IN p_cantidad_aumentar FLOAT
+)
+BEGIN
+    DECLARE v_cantidad_actual FLOAT;
+
+    -- Buscar la cantidad actual del ingrediente
+    SELECT CantidadInventario INTO v_cantidad_actual
+    FROM Ingredientes
+    WHERE id = p_id;
+
+    -- Verificar si se encontró el ingrediente
+    IF v_cantidad_actual IS NOT NULL THEN
+        -- Actualizar la cantidad de inventario sumando la cantidad a aumentar
+        UPDATE Ingredientes
+        SET CantidadInventario = CantidadInventario + p_cantidad_aumentar
+        WHERE id = p_id;
+
+        SELECT 'Cantidad de inventario actualizada correctamente' AS message;
+    ELSE
+        SELECT 'No se encontró un ingrediente con el ID proporcionado' AS message;
+    END IF;
+END //
+
+DELIMITER ;
+
 
 CALL verificarStock(1, 1, @p_result, @p_map);
 SELECT @p_result AS p_result, @p_map AS p_map;
