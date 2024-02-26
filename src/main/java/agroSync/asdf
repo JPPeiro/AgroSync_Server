@@ -1,3 +1,10 @@
+POSTMAN: http://localhost:8080/api/usuarios/
+
+CALL verificarStock(1, 1, @p_result, @p_map);
+SELECT @p_result AS p_result, @p_map AS p_map;
+
+select * from Ingredientes;
+POSTMAN: http://localhost:8080/api/usuarios/
 
 create database Agro_Sync;
 use Agro_Sync;
@@ -299,3 +306,9 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+CALL verificarStock(1, 1, @p_result, @p_map);
+SELECT @p_result AS p_result, @p_map AS p_map;
+
+select * from Ingredientes;
