@@ -15,8 +15,8 @@ public class MyDataSource {
         MysqlDataSource mysqlDS = new MysqlDataSource();
 //        mysqlDS.setURL("jdbc:mysql://127.0.0.1:3306/Agro_Sync");
         mysqlDS.setURL("jdbc:mysql://localhost:3306/Agro_Sync");
-        mysqlDS.setUser("jose");
-        mysqlDS.setPassword("123");
+        mysqlDS.setUser("root");
+        mysqlDS.setPassword("1234");
 
         return mysqlDS;
     }

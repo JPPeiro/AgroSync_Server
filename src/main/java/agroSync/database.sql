@@ -176,7 +176,7 @@ DELIMITER //
 CREATE PROCEDURE AgregarPienso(IN p_pienso_id INT, IN p_cantidad_total FLOAT)
 BEGIN
     -- Declaración de variables locales
-    DECLARE cantidad_ingrediente FLOAT;
+    DECLARE cantidad_ingrediente float;
     DECLARE id_ingrediente INT;
 
     -- Declaración del cursor
@@ -185,15 +185,14 @@ BEGIN
         FROM ComposicionPiensos
         WHERE PiensosID = p_pienso_id;
 
--- Añadir cantidadTotal a la cantidadInventario del pienso
+    -- Añadir cantidadTotal a la cantidadInventario del pienso
     UPDATE Piensos
     SET CantidadInventario = CantidadInventario + p_cantidad_total
     WHERE id = p_pienso_id;
 
--- Apertura del cursor
+    -- Apertura del cursor
     OPEN cur_composicion;
-    read_loop:
-    LOOP
+    read_loop: LOOP
         FETCH cur_composicion INTO id_ingrediente, cantidad_ingrediente;
         IF (cantidad_ingrediente IS NULL) THEN
             LEAVE read_loop;
@@ -213,7 +212,7 @@ DELIMITER //
 
 CREATE PROCEDURE verificarStock(
     IN p_pienso_id INT,
-    IN p_cantidad_total FLOAT,
+    IN p_cantidad_total float,
     OUT p_result BOOLEAN,
     OUT p_map JSON
 )
@@ -228,7 +227,7 @@ BEGIN
         FROM ComposicionPiensos
         WHERE PiensosID = p_pienso_id;
 
--- Variable que contendrá el resultado del cursor
+    -- Variable que contendrá el resultado del cursor
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET no_negativo := FALSE;
 
     SET p_map = JSON_ARRAY();
@@ -236,9 +235,8 @@ BEGIN
     -- Abrir cursor
     OPEN ingredientes_cursor;
 
--- Iterar sobre los ingredientes
-    ingredientes_loop:
-    LOOP
+    -- Iterar sobre los ingredientes
+    ingredientes_loop: LOOP
         -- Fetch del cursor
         FETCH ingredientes_cursor INTO ingrediente_id, cantidad_necesaria;
 
@@ -251,15 +249,13 @@ BEGIN
         SET resultado = cantidad_necesaria * p_cantidad_total;
 
         -- Comprobar si la cantidad en inventario es suficiente
-        SELECT CantidadInventario
-        INTO @cantidad_inventario
+        SELECT CantidadInventario INTO @cantidad_inventario
         FROM Ingredientes
         WHERE id = ingrediente_id;
 
--- Si el resultado es negativo, calcular la cantidad necesaria
+        -- Si el resultado es negativo, calcular la cantidad necesaria
         IF (@cantidad_inventario - resultado) < 0 THEN
-            SET p_map = JSON_ARRAY_APPEND(p_map, '$', JSON_OBJECT('idIngrediente', ingrediente_id, 'cantidad',
-                                                                  -(@cantidad_inventario - resultado)));
+            SET p_map = JSON_ARRAY_APPEND(p_map, '$', JSON_OBJECT('idIngrediente', ingrediente_id, 'cantidad', -(@cantidad_inventario - resultado)));
             SET p_result = FALSE;
         END IF;
     END LOOP;
@@ -267,7 +263,7 @@ BEGIN
     -- Cerrar cursor
     CLOSE ingredientes_cursor;
 
--- Si todos los ingredientes tienen suficiente cantidad, devolver verdadero
+    -- Si todos los ingredientes tienen suficiente cantidad, devolver verdadero
     IF p_result IS NULL THEN
         SET p_result = TRUE;
     END IF;
@@ -285,12 +281,11 @@ BEGIN
     DECLARE v_cantidad_actual FLOAT;
 
     -- Buscar la cantidad actual del ingrediente
-    SELECT CantidadInventario
-    INTO v_cantidad_actual
+    SELECT CantidadInventario INTO v_cantidad_actual
     FROM Ingredientes
     WHERE id = p_id;
 
--- Verificar si se encontró el ingrediente
+    -- Verificar si se encontró el ingrediente
     IF v_cantidad_actual IS NOT NULL THEN
         -- Actualizar la cantidad de inventario sumando la cantidad a aumentar
         UPDATE Ingredientes
