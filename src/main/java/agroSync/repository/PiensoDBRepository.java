@@ -170,16 +170,30 @@ public class PiensoDBRepository implements IPiensoRepository {
             String mapJson = cs.getString(4);
 
             Gson gson = new Gson();
-            Type type = new TypeToken<List<Object>>(){}.getType();
-            List<Object> resultList = gson.fromJson(mapJson, type);
+            Type type = new TypeToken<List<Map<String, Object>>>(){}.getType();
+            List<Map<String, Object>> resultList = gson.fromJson(mapJson, type);
 
             Map<String, Object> resultMap = new HashMap<>();
             resultMap.put("result", result);
+
+            for (Map<String, Object> item : resultList) {
+                if (item.containsKey("cantidad")) {
+                    Object cantidad = item.get("cantidad");
+                    if (cantidad instanceof Double) {
+                        item.put("cantidad", String.valueOf(cantidad));
+                    }
+                }
+                if (item.containsKey("idIngrediente")) {
+                    Object id = item.get("idIngrediente");
+                    if (id instanceof Double) {
+                        item.put("idIngrediente", String.valueOf(id));
+                    }
+                }
+            }
+
             resultMap.put("data", resultList);
 
             return resultMap;
         }
     }
-
-
 }

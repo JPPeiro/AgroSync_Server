@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/41fa4aec-1716-45f2-be88-d7f3e725c1fd/console_5.sql" dialect="MariaDB" />
     <file url="file://$PROJECT_DIR$/src/main/java/agroSync/database.sql" dialect="MariaDB" />
   </component>
 </project>
