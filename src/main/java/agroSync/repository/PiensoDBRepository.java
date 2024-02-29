@@ -186,9 +186,12 @@ public class PiensoDBRepository implements IPiensoRepository {
                 if (item.containsKey("idIngrediente")) {
                     Object id = item.get("idIngrediente");
                     if (id instanceof Double) {
-                        item.put("idIngrediente", String.valueOf(id));
+                        String idString = String.valueOf(((Double) id).intValue());
+                        item.put("idIngrediente", idString);
                     }
+                    System.out.println(item.get("idIngrediente"));
                 }
+
             }
 
             resultMap.put("data", resultList);
@@ -196,4 +199,5 @@ public class PiensoDBRepository implements IPiensoRepository {
             return resultMap;
         }
     }
+
 }

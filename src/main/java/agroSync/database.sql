@@ -255,7 +255,7 @@ BEGIN
 
         -- Si el resultado es negativo, calcular la cantidad necesaria
         IF (@cantidad_inventario - resultado) < 0 THEN
-            SET p_map = JSON_ARRAY_APPEND(p_map, '$', JSON_OBJECT('idIngrediente', ingrediente_id, 'cantidad', -(@cantidad_inventario - resultado)));
+            SET p_map = JSON_ARRAY_APPEND(p_map, '$', JSON_OBJECT('idIngrediente', CAST(ingrediente_id AS INT), 'cantidad', -(@cantidad_inventario - resultado)));
             SET p_result = FALSE;
         END IF;
     END LOOP;
