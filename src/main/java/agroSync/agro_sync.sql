@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS Piensos
 (
     id                 INT AUTO_INCREMENT PRIMARY KEY,
     Nombre             VARCHAR(255) NOT NULL,
-    CantidadInventario FLOAT
+    CantidadInventario FLOAT,
+    imagen             VARCHAR(50)
     );
 
 CREATE TABLE IF NOT EXISTS Ingredientes
@@ -66,7 +67,8 @@ CREATE TABLE IF NOT EXISTS IngredientesProveedor
 -- Inserts
 -- Inserts para la tabla Usuario
 INSERT INTO Usuario (nombre, contrasena, permisos)
-VALUES ('juan_perez', 'juan123', 'admin'),
+VALUES ('admin', '123', 'admin'),
+       ('juan_perez', 'juan123', 'admin'),
        ('ana_garcia', 'ana456', 'normal'),
        ('carlos_rodriguez', 'carlos789', 'normal'),
        ('laura_martinez', 'laura321', 'normal'),
@@ -108,22 +110,22 @@ VALUES ('Harina de maiz', 500),
 
 
 -- Inserts para la tabla Piensos
-INSERT INTO Piensos (Nombre, CantidadInventario)
-VALUES ('Pienso para cachorros', 1000),
-       ('Pienso para perros adultos', 1500),
-       ('Pienso para gatos jovenes', 800),
-       ('Pienso para gatos adultos', 1200),
-       ('Pienso para aves de corral', 2000),
-       ('Pienso para gallinas ponedoras', 1800),
-       ('Pienso para cerdos de engorde', 2500),
-       ('Pienso para cerdas lactantes', 1700),
-       ('Pienso para vacas lecheras', 2200),
-       ('Pienso para terneros', 1600),
-       ('Pienso para caballos de trabajo', 1300),
-       ('Pienso para caballos de competicion', 1100),
-       ('Pienso para conejos en crecimiento', 1400),
-       ('Pienso para conejos adultos', 1900),
-       ('Pienso para peces tropicales', 1000);
+INSERT INTO Piensos (Nombre, CantidadInventario, imagen)
+VALUES ('Pienso para cachorros', 1000, 'Pienso1.png'),
+       ('Pienso para perros adultos', 1500, 'Pienso2.png'),
+       ('Pienso para gatos jovenes', 800, 'Pienso3.png'),
+       ('Pienso para gatos adultos', 1200, 'Pienso4.png'),
+       ('Pienso para aves de corral', 2000, 'Pienso5.png'),
+       ('Pienso para gallinas ponedoras', 1800, 'Pienso6.png'),
+       ('Pienso para cerdos de engorde', 2500, 'Pienso7.png'),
+       ('Pienso para cerdas lactantes', 1700, 'Pienso8.png'),
+       ('Pienso para vacas lecheras', 2200, 'Pienso9.png'),
+       ('Pienso para terneros', 1600, 'Pienso10.png'),
+       ('Pienso para caballos de trabajo', 1300, 'Pienso11.png'),
+       ('Pienso para caballos de competicion', 1100, 'Pienso12.png'),
+       ('Pienso para conejos en crecimiento', 1400, 'Pienso13.png'),
+       ('Pienso para conejos adultos', 1900, 'Pienso14.png'),
+       ('Pienso para peces tropicales', 1000, 'Pienso15.png');
 
 
 -- Inserts para la tabla ComposicionPiensos
@@ -297,7 +299,7 @@ VALUES ('Veterinaria La Granja');
 
 -- Proveedor 5
 INSERT INTO Proveedores (nombre)
-VALUES ('Cereales y Forrajes Pérez');
+VALUES ('Cereales y Forrajes Perez');
 
 -- Proveedor 6
 INSERT INTO Proveedores (nombre)
@@ -317,7 +319,7 @@ VALUES ('Comercializadora Ortiz');
 
 -- Proveedor 10
 INSERT INTO Proveedores (nombre)
-VALUES ('Ganadería Garcia');
+VALUES ('Ganaderia Garcia');
 
 
 -- Inserts para la tabla IngredientesProveedor

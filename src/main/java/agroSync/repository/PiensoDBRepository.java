@@ -93,6 +93,7 @@ public class PiensoDBRepository implements IPiensoRepository {
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
                         .cantidad(rs.getInt(3))
+                        .imagen(rs.getString(4))
                         .build());
             }
         }
@@ -138,6 +139,7 @@ public class PiensoDBRepository implements IPiensoRepository {
                         .id(rs.getInt(1))
                         .nombre(rs.getString(2))
                         .cantidad(rs.getInt(3))
+                        .imagen(rs.getString(4))
                         .build();
             }
         }
@@ -196,70 +198,3 @@ public class PiensoDBRepository implements IPiensoRepository {
         return resultMap;
     }
 }
-/*
-DELIMITER //
-
-CREATE PROCEDURE verificarStock(
-    IN p_pienso_id INT,
-    IN p_cantidad_total float,
-    OUT p_result BOOLEAN,
-    OUT p_map JSON
-)
-BEGIN
-    DECLARE ingrediente_id INT;
-    DECLARE cantidad_necesaria FLOAT;
-    DECLARE resultado FLOAT;
-
-    DECLARE no_negativo BOOLEAN DEFAULT TRUE;
-    DECLARE ingredientes_cursor CURSOR FOR
-        SELECT IngredienteID, Cantidad
-        FROM ComposicionPiensos
-        WHERE PiensosID = p_pienso_id;
-
-    -- Variable que contendrá el resultado del cursor
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET no_negativo := FALSE;
-
-    SET p_map = JSON_ARRAY();
-
-    -- Abrir cursor
-    OPEN ingredientes_cursor;
-
-    -- Iterar sobre los ingredientes
-    ingredientes_loop: LOOP
-        -- Fetch del cursor
-        FETCH ingredientes_cursor INTO ingrediente_id, cantidad_necesaria;
-
-        -- Salir del bucle si no hay más filas
-        IF no_negativo = FALSE THEN
-            LEAVE ingredientes_loop;
-        END IF;
-
-        -- Calcular la cantidad necesaria para no ser negativo
-        SET resultado = cantidad_necesaria * p_cantidad_total;
-
-        -- Comprobar si la cantidad en inventario es suficiente
-        SELECT CantidadInventario INTO @cantidad_inventario
-        FROM Ingredientes
-        WHERE id = ingrediente_id;
-
-        -- Si el resultado es negativo, calcular la cantidad necesaria
-        IF (@cantidad_inventario - resultado) < 0 THEN
-            SET @json_object = CONCAT('{"idIngrediente": ', CAST(ingrediente_id AS CHAR), ', "cantidad": ', CAST(-(@cantidad_inventario - resultado) AS CHAR), '}');
-            SET p_map = JSON_ARRAY_APPEND(p_map, '$', @json_object);
-
-
-            SET p_result = FALSE;
-        END IF;
-    END LOOP;
-
-    -- Cerrar cursor
-    CLOSE ingredientes_cursor;
-
-    -- Si todos los ingredientes tienen suficiente cantidad, devolver verdadero
-    IF p_result IS NULL THEN
-        SET p_result = TRUE;
-    END IF;
-END//
-
-DELIMITER ;
-* */

@@ -14,6 +14,7 @@ public class Pienso {
     private int id;
     private String nombre;
     private int cantidad;
+    private String imagen;
 
     /**
      * Compara si el objeto dado es igual a este Pienso.
