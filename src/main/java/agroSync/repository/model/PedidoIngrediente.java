@@ -14,7 +14,7 @@ public class PedidoIngrediente {
     private int id;
     private int ingredienteId;
     private int proveedorId;
-    private int cantidad;
+    private float cantidad;
     private float coste;
 
     /**

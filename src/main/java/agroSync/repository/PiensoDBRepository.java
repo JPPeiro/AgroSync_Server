@@ -3,9 +3,7 @@ package agroSync.repository;
 import agroSync.repository.intefaces.IPiensoRepository;
 import agroSync.repository.model.MyDataSource;
 import agroSync.repository.model.Pienso;
-import agroSync.repository.model.Usuario;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import org.springframework.stereotype.Repository;
 
@@ -156,6 +154,7 @@ public class PiensoDBRepository implements IPiensoRepository {
      */
     public Map<String, Object> verificarStock(int piensoId, int cantidadTotal) throws SQLException {
         String sql = "{call verificarStock(?,?,?,?)}";
+        Map<String, Object> resultMap = new HashMap<>();
 
         try (Connection connection = MyDataSource.getMySQLDataSource().getConnection();
              CallableStatement cs = connection.prepareCall(sql)) {
@@ -173,31 +172,94 @@ public class PiensoDBRepository implements IPiensoRepository {
             Type type = new TypeToken<List<Map<String, Object>>>(){}.getType();
             List<Map<String, Object>> resultList = gson.fromJson(mapJson, type);
 
-            Map<String, Object> resultMap = new HashMap<>();
-            resultMap.put("result", result);
-
-            for (Map<String, Object> item : resultList) {
-                if (item.containsKey("cantidad")) {
-                    Object cantidad = item.get("cantidad");
-                    if (cantidad instanceof Double) {
-                        item.put("cantidad", String.valueOf(cantidad));
-                    }
+            List<Map<String, Object>> ingredientList = new ArrayList<>();
+            for (Map<String, Object> ingredient : resultList) {
+                // Convertir "idIngrediente" a entero si es posible
+                Object idIngrediente = ingredient.get("idIngrediente");
+                if (idIngrediente instanceof Double) {
+                    int idIngredienteInt = ((Double) idIngrediente).intValue();
+                    String id = String.valueOf(idIngredienteInt);
+                    ingredient.put("idIngrediente", id);
                 }
-                if (item.containsKey("idIngrediente")) {
-                    Object id = item.get("idIngrediente");
-                    if (id instanceof Double) {
-                        String idString = String.valueOf(((Double) id).intValue());
-                        item.put("idIngrediente", idString);
-                    }
-                    System.out.println(item.get("idIngrediente"));
-                }
-
+                ingredientList.add(ingredient);
             }
 
-            resultMap.put("data", resultList);
+            // Si la lista de ingredientes está vacía, establecer el resultado en verdadero
+            if (ingredientList.isEmpty()) {
+                result = true;
+            }
 
-            return resultMap;
+            resultMap.put("result", result);
+            resultMap.put("ingredientList", ingredientList);
         }
-    }
 
+        return resultMap;
+    }
 }
+/*
+DELIMITER //
+
+CREATE PROCEDURE verificarStock(
+    IN p_pienso_id INT,
+    IN p_cantidad_total float,
+    OUT p_result BOOLEAN,
+    OUT p_map JSON
+)
+BEGIN
+    DECLARE ingrediente_id INT;
+    DECLARE cantidad_necesaria FLOAT;
+    DECLARE resultado FLOAT;
+
+    DECLARE no_negativo BOOLEAN DEFAULT TRUE;
+    DECLARE ingredientes_cursor CURSOR FOR
+        SELECT IngredienteID, Cantidad
+        FROM ComposicionPiensos
+        WHERE PiensosID = p_pienso_id;
+
+    -- Variable que contendrá el resultado del cursor
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET no_negativo := FALSE;
+
+    SET p_map = JSON_ARRAY();
+
+    -- Abrir cursor
+    OPEN ingredientes_cursor;
+
+    -- Iterar sobre los ingredientes
+    ingredientes_loop: LOOP
+        -- Fetch del cursor
+        FETCH ingredientes_cursor INTO ingrediente_id, cantidad_necesaria;
+
+        -- Salir del bucle si no hay más filas
+        IF no_negativo = FALSE THEN
+            LEAVE ingredientes_loop;
+        END IF;
+
+        -- Calcular la cantidad necesaria para no ser negativo
+        SET resultado = cantidad_necesaria * p_cantidad_total;
+
+        -- Comprobar si la cantidad en inventario es suficiente
+        SELECT CantidadInventario INTO @cantidad_inventario
+        FROM Ingredientes
+        WHERE id = ingrediente_id;
+
+        -- Si el resultado es negativo, calcular la cantidad necesaria
+        IF (@cantidad_inventario - resultado) < 0 THEN
+            SET @json_object = CONCAT('{"idIngrediente": ', CAST(ingrediente_id AS CHAR), ', "cantidad": ', CAST(-(@cantidad_inventario - resultado) AS CHAR), '}');
+            SET p_map = JSON_ARRAY_APPEND(p_map, '$', @json_object);
+
+
+            SET p_result = FALSE;
+        END IF;
+    END LOOP;
+
+    -- Cerrar cursor
+    CLOSE ingredientes_cursor;
+
+    -- Si todos los ingredientes tienen suficiente cantidad, devolver verdadero
+    IF p_result IS NULL THEN
+        SET p_result = TRUE;
+    END IF;
+END//
+
+DELIMITER ;
+* */

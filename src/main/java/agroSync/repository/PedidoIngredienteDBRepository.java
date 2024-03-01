@@ -26,7 +26,7 @@ public class PedidoIngredienteDBRepository implements IPedidoIngredienteReposito
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, pedidoIngrediente.getProveedorId());
             ps.setInt(2, pedidoIngrediente.getIngredienteId());
-            ps.setInt(3, pedidoIngrediente.getCantidad());
+            ps.setFloat(3, pedidoIngrediente.getCantidad());
             ps.setFloat(4, pedidoIngrediente.getCoste());
             ps.executeUpdate();
         }
@@ -49,7 +49,7 @@ public class PedidoIngredienteDBRepository implements IPedidoIngredienteReposito
             ps.setInt(1, pedidoIngrediente.getId());
             ps.setInt(2, pedidoIngrediente.getProveedorId());
             ps.setInt(3, pedidoIngrediente.getIngredienteId());
-            ps.setInt(4, pedidoIngrediente.getCantidad());
+            ps.setFloat(4, pedidoIngrediente.getCantidad());
             ps.setFloat(5, pedidoIngrediente.getCoste());
             ps.setInt(6, pedidoIngrediente.getId());
             ps.executeUpdate();
@@ -97,7 +97,7 @@ public class PedidoIngredienteDBRepository implements IPedidoIngredienteReposito
                         .id(rs.getInt(1))
                         .proveedorId(rs.getInt(2))
                         .ingredienteId(rs.getInt(3))
-                        .cantidad(rs.getInt(4))
+                        .cantidad(rs.getFloat(4))
                         .coste(rs.getFloat(5))
                         .build());
             }
@@ -125,7 +125,7 @@ public class PedidoIngredienteDBRepository implements IPedidoIngredienteReposito
                         .id(rs.getInt(1))
                         .proveedorId(rs.getInt(2))
                         .ingredienteId(rs.getInt(3))
-                        .cantidad(rs.getInt(4))
+                        .cantidad(rs.getFloat(4))
                         .coste(rs.getFloat(5))
                         .build();
             }
